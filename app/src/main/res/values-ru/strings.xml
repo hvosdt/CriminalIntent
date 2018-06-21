@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CriminalIntent</string>
+    <string name="crime_title_hint">Введите название инциндента</string>
+    <string name="crime_title_label">Название</string>
+    <string name="crime_details_label">Детали</string>
+    <string name="crime_solved_label">Решено</string>
+    <string name="date_picker_title">Дата инциндента</string>
+    <string name="time_picker_title">Время инциндента</string>
+</resources>
