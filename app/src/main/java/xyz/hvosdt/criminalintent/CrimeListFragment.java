@@ -2,6 +2,7 @@ package xyz.hvosdt.criminalintent;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ public class CrimeListFragment extends Fragment {
 
     private RecyclerView mCrimeRecycleView;
     private CrimeAdapter mAdapter;
+    private Button mAddCrimeButton;
     private static final int REQUEST_CRIME = 1;
 
     @Override
@@ -30,14 +33,28 @@ public class CrimeListFragment extends Fragment {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
-        mCrimeRecycleView = (RecyclerView) view.findViewById(R.id.crime_recycle_view);
-        mCrimeRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        List<Crime> empty = chechCrimes();
+        if (!empty.isEmpty()) {
+            View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
+            mCrimeRecycleView = (RecyclerView) view.findViewById(R.id.crime_recycle_view);
+            mCrimeRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            updateUI();
+            return view;
+        }else {
+            View view = inflater.inflate(R.layout.fragment_empty_crime_list, container, false);
+            mAddCrimeButton = (Button) view.findViewById(R.id.add_crime_button);
+            mAddCrimeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Crime crime = new Crime();
+                    CrimeLab.get(getActivity()).add(crime);
+                    Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
+                    startActivity(intent);
+                }
+            });
+            return view;
+        }
 
-
-        updateUI();
-
-        return view;
 
     }
 
@@ -104,12 +121,19 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    private void updateUI() {
+    private List<Crime> chechCrimes() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
+        return crimes;
+    }
+
+    private void updateUI() {
+        List<Crime> crimes = chechCrimes();
         if (mAdapter == null) {
             mAdapter = new CrimeAdapter(crimes);
-            mCrimeRecycleView.setAdapter(mAdapter);
+            if (mCrimeRecycleView != null) {
+                mCrimeRecycleView.setAdapter(mAdapter);
+            };
         }else {
             mAdapter.notifyDataSetChanged();
         }

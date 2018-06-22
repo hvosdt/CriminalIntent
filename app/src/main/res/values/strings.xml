@@ -10,4 +10,6 @@
     <string name="show_subtitle">Show subtitle</string>
     <string name="hide_subtitle">Hide subtitle</string>
     <string name="subtitle_format">%1$d crimes</string>
+    <string name="empty_list">No items. Add crime.</string>
+    <string name="add_crime">Add crime</string>
 </resources>
